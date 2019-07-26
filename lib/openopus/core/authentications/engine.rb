@@ -10,6 +10,15 @@ module Openopus
             end
           end
         end
+
+        config.to_prepare do
+          klass = Openopus::Core::Authentications::Config.user_class.classify.constantize rescue nil
+
+          if klass
+            klass.send(:has_many, :credentials, as: :credentialed, dependent: :destroy) 
+            klass.send(:accepts_nested_attributes_for, :credentials)
+          end
+        end
       end
     end
   end
